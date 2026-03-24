@@ -37,7 +37,6 @@ sqlx = { version = "0.7", default-features = false, features = [
     "json",
     "migrate",
 ] }
-sqlxmq = "0.5"
 thiserror = "2.0"
 tokio = { version = "1.40", features = ["macros"] }
 tracing = "0.1.40"

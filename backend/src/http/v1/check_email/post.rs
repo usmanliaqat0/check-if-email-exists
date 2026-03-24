@@ -29,9 +29,8 @@ use warp::http::StatusCode;
 use warp::{http, Filter};
 
 use crate::config::BackendConfig;
-use crate::http::v0::check_email::post::{with_config, CheckEmailRequest};
-use crate::http::v1::bulk::post::publish_task;
 use crate::http::{check_header, ReacherResponseError};
+use crate::http::v1::shared::{with_config, CheckEmailRequest};
 use crate::storage::commercial_license_trial::send_to_reacher;
 use crate::worker::consume::MAX_QUEUE_PRIORITY;
 use crate::worker::do_work::{CheckEmailJobId, CheckEmailTask};

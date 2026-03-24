@@ -305,51 +305,6 @@
 				]
 			}
 		},
-		"/v0/check_email": {
-			"post": {
-				"summary": "/v0/check_email",
-				"responses": {
-					"200": {
-						"description": "OK",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/CheckEmailOutput"
-								},
-								"examples": {}
-							}
-						}
-					}
-				},
-				"operationId": "post-v0-check-email",
-				"description": "**Sunset notice: please use `/v1/check_email` instead.** Both endpoints accept the same input arguments and return the same output; only their internal implementation differs. Perform a comprehensive verification of an email address. Unlike the `/v1/check_email` endpoint, this endpoint performs an email verification immediately, without considering the Reacher server's throttling, concurrency, and other configurations. As such, this endpoint is slightly riskier than `/v1/check_email`, as the Reacher server's IP reputation can be impacted if this endpoint is called too frequently.",
-				"requestBody": {
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/CheckEmailRequest"
-							}
-						}
-					},
-					"description": "Request object containing all parameters necessary for an email verification."
-				},
-				"parameters": [
-					{
-						"schema": {
-							"type": "string"
-						},
-						"in": "header",
-						"name": "Authorization",
-						"description": "Your personal Reacher API key",
-						"required": true
-					}
-				],
-				"x-stoplight": {
-					"id": "9cw3vilj3q88h"
-				},
-				"deprecated": true
-			},
-			"parameters": []
 		}
 	},
 	"components": {

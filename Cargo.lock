@@ -129,12 +129,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "anymap2"
-version = "0.13.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d301b3b94cb4b2f23d7917810addbbaff90738e0ca2be692bd027e70d7e0330c"
-
-[[package]]
 name = "arraydeque"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -601,7 +595,7 @@ checksum = "613afe47fcd5fac7ccf1db93babcb082c5994d996f20b8b159f2ad1658eb5724"
 
 [[package]]
 name = "check-if-email-exists"
-version = "0.11.6"
+version = "0.11.7"
 dependencies = [
  "anyhow",
  "async-recursion",
@@ -633,7 +627,7 @@ dependencies = [
 
 [[package]]
 name = "check-if-email-exists-cli"
-version = "0.11.6"
+version = "0.11.7"
 dependencies = [
  "anyhow",
  "check-if-email-exists",
@@ -2421,23 +2415,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "native-tls"
-version = "0.2.12"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a8614eb2c83d59d1c8cc974dd3f920198647674a0a035e1af1fa58707e317466"
-dependencies = [
- "libc",
- "log",
- "openssl",
- "openssl-probe",
- "openssl-sys",
- "schannel",
- "security-framework 2.11.1",
- "security-framework-sys",
- "tempfile",
-]
-
-[[package]]
 name = "nom"
 version = "7.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3062,7 +3039,7 @@ dependencies = [
 
 [[package]]
 name = "reacher_backend"
-version = "0.11.6"
+version = "0.11.7"
 dependencies = [
  "anyhow",
  "async-smtp",
@@ -3081,7 +3058,6 @@ dependencies = [
  "serde_json",
  "serial_test",
  "sqlx",
- "sqlxmq",
  "thiserror 2.0.8",
  "tokio",
  "tokio-executor-trait",
@@ -3788,15 +3764,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0fda2ff0d084019ba4d7c6f371c95d8fd75ce3524c3cb8fb653a3023f6323e64"
 
 [[package]]
-name = "signal-hook-registry"
-version = "1.4.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a9e9e0b4211b72e7b8b6e85c807d36c212bdb33ea8587f7569562a84df5465b1"
-dependencies = [
- "libc",
-]
-
-[[package]]
 name = "signature"
 version = "2.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3908,7 +3875,6 @@ dependencies = [
  "indexmap 2.7.0",
  "log",
  "memchr",
- "native-tls",
  "once_cell",
  "paste",
  "percent-encoding",
@@ -4074,35 +4040,6 @@ dependencies = [
  "url",
  "urlencoding",
  "uuid",
-]
-
-[[package]]
-name = "sqlxmq"
-version = "0.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e914521071581f0413516de0e7931086ebe4a22d719c1100de29eb339c712311"
-dependencies = [
- "anymap2",
- "chrono",
- "dotenv",
- "log",
- "serde",
- "serde_json",
- "sqlx",
- "sqlxmq_macros",
- "tokio",
- "uuid",
-]
-
-[[package]]
-name = "sqlxmq_macros"
-version = "0.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bd00667edb120f18e14e2b4a71cddb308dc3605171ed7afda3056129d08b9f4f"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 1.0.109",
 ]
 
 [[package]]
@@ -4347,9 +4284,7 @@ dependencies = [
  "bytes",
  "libc",
  "mio",
- "parking_lot",
  "pin-project-lite",
- "signal-hook-registry",
  "socket2 0.5.8",
  "tokio-macros",
  "windows-sys 0.52.0",
@@ -4733,7 +4668,6 @@ version = "1.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f8c5f0a0af699448548ad1a2fbf920fb4bee257eae39953ba95cb84891a0446a"
 dependencies = [
- "getrandom",
  "serde",
 ]
 

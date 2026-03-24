@@ -1,0 +1,37 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   D:\dev\usman\check-if-email-exists\cli\Cargo.toml
+workspace: D:\dev\usman\check-if-email-exists\Cargo.toml
+    Checking windows-sys v0.52.0
+    Checking icu_normalizer v1.5.0
+    Checking rustls-pki-types v1.10.1
+   Compiling aws-lc-sys v0.24.0
+    Checking hex v0.4.3
+    Checking concurrent-queue v2.5.0
+    Checking block-padding v0.3.3
+    Checking windows-targets v0.48.5
+error: failed to run custom build command for `aws-lc-sys v0.24.0`
+
+Caused by:
+  process didn't exit successfully: `D:\dev\usman\check-if-email-exists\target\debug\build\aws-lc-sys-0d419b0505dee830\build-script-main` (exit code: 101)
+  --- stdout
+  cargo:rerun-if-env-changed=AWS_LC_SYS_NO_PREFIX
+  cargo:rerun-if-env-changed=AWS_LC_SYS_PREGENERATING_BINDINGS
+  cargo:rerun-if-env-changed=AWS_LC_SYS_EXTERNAL_BINDGEN
+  cargo:rerun-if-env-changed=AWS_LC_SYS_NO_ASM
+  cargo:rerun-if-env-changed=AWS_LC_SYS_CFLAGS
+  cargo:rerun-if-env-changed=AWS_LC_SYS_PREBUILT_NASM
+  cargo:rerun-if-env-changed=AWS_LC_SYS_C_STD
+  cargo:rustc-cfg=x86_64_pc_windows_msvc
+  cargo:rerun-if-env-changed=AWS_LC_SYS_CMAKE_BUILDER
+  cargo:rerun-if-env-changed=AWS_LC_SYS_STATIC
+  default_for Target: 'x86_64-pc-windows-msvc'
+  cargo:rerun-if-env-changed=AWS_LC_SYS_STATIC
+  cargo:rerun-if-env-changed=CMAKE
+
+  --- stderr
+  Missing dependency: cmake
+
+  thread 'main' (26996) panicked at C:\Users\chusm\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\aws-lc-sys-0.24.0\builder\main.rs:372:40:
+  called `Result::unwrap()` on an `Err` value: "Required build dependency is missing. Halting build."
+  note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+warning: build failed, waiting for other jobs to finish...

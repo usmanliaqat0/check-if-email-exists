@@ -14,20 +14,18 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-//! This file implements the `POST /v0/check_email` endpoint.
-
-use check_if_email_exists::smtp::verif_method::VerifMethod;
-use check_if_email_exists::{check_email, CheckEmailInput, CheckEmailInputProxy, LOG_TARGET};
+use check_if_email_exists::smtp::verif_method::{
+	HotmailB2CVerifMethod, VerifMethod, VerifMethodSmtpConfig, YahooVerifMethod, DEFAULT_PROXY_ID,
+};
+use check_if_email_exists::{CheckEmailInput, CheckEmailInputProxy};
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use std::time::Duration;
-use warp::{http, Filter};
+use warp::Filter;
 
-use super::backwardcompat::{BackwardCompatHotmailB2CVerifMethod, BackwardCompatYahooVerifMethod};
 use crate::config::BackendConfig;
-use crate::http::{check_header, ReacherResponseError};
 
-/// The request body for the `POST /v0/check_email` endpoint.
+/// The request body for the email verification endpoints.
 #[derive(Debug, Default, Deserialize, Serialize)]
 pub struct CheckEmailRequest {
 	pub to_email: String,
@@ -36,9 +34,80 @@ pub struct CheckEmailRequest {
 	pub proxy: Option<CheckEmailInputProxy>,
 	pub smtp_timeout: Option<Duration>,
 	pub smtp_port: Option<u16>,
-	// The following fields are for backward compatibility.
-	pub yahoo_verif_method: Option<BackwardCompatYahooVerifMethod>,
-	pub hotmailb2c_verif_method: Option<BackwardCompatHotmailB2CVerifMethod>,
+	pub yahoo_verif_method: Option<V1YahooVerifMethod>,
+	pub hotmailb2c_verif_method: Option<V1HotmailB2CVerifMethod>,
+}
+
+#[derive(Debug, Default, Deserialize, Serialize)]
+pub enum V1YahooVerifMethod {
+	Api,
+	#[default]
+	Headless,
+	Smtp,
+}
+
+impl V1YahooVerifMethod {
+	pub fn to_yahoo_verif_method(
+		&self,
+		use_default_proxy: bool,
+		hello_name: String,
+		from_email: String,
+		smtp_timeout: Option<Duration>,
+		smtp_port: u16,
+		retries: usize,
+	) -> YahooVerifMethod {
+		match self {
+			Self::Api => YahooVerifMethod::Api,
+			Self::Headless => YahooVerifMethod::Headless,
+			Self::Smtp => YahooVerifMethod::Smtp(VerifMethodSmtpConfig {
+				from_email,
+				hello_name,
+				smtp_port,
+				smtp_timeout,
+				proxy: if use_default_proxy {
+					Some(DEFAULT_PROXY_ID.to_string())
+				} else {
+					None
+				},
+				retries,
+			}),
+		}
+	}
+}
+
+#[derive(Debug, Default, Deserialize, Serialize)]
+pub enum V1HotmailB2CVerifMethod {
+	#[default]
+	Headless,
+	Smtp,
+}
+
+impl V1HotmailB2CVerifMethod {
+	pub fn to_hotmailb2c_verif_method(
+		&self,
+		use_default_proxy: bool,
+		hello_name: String,
+		from_email: String,
+		smtp_timeout: Option<Duration>,
+		smtp_port: u16,
+		retries: usize,
+	) -> HotmailB2CVerifMethod {
+		match self {
+			Self::Headless => HotmailB2CVerifMethod::Headless,
+			Self::Smtp => HotmailB2CVerifMethod::Smtp(VerifMethodSmtpConfig {
+				from_email,
+				hello_name,
+				smtp_port,
+				smtp_timeout,
+				proxy: if use_default_proxy {
+					Some(DEFAULT_PROXY_ID.to_string())
+				} else {
+					None
+				},
+				retries,
+			}),
+		}
+	}
 }
 
 impl CheckEmailRequest {
@@ -57,33 +126,25 @@ impl CheckEmailRequest {
 		let smtp_port = self.smtp_port.unwrap_or(25);
 		let retries = 1;
 
-		// The current behavior is a bit complex. If the proxy field is present,
-		// we force use the proxy for all the verifications. If the proxy field is
-		// not present, we use the default configuration for all the verifications.
-		//
-		// If the proxy field is unset, but one of the other fields (from_email,
-		// hello_name, smtp_timeout, smtp_port) is set, we ignore those fields.
 		let mut verif_method = if let Some(proxy) = &self.proxy {
 			VerifMethod::new_with_same_config_for_all(
 				Some(proxy.clone()),
 				hello_name.clone(),
 				from_email.clone(),
 				smtp_port,
-				smtp_timeout.clone(),
+				smtp_timeout,
 				retries,
 			)
 		} else {
 			config.get_verif_method()
 		};
 
-		// Also support backward compatibility of the *_verif_method fields, which
-		// override the verif_method.
 		if let Some(yahoo_verif_method) = &self.yahoo_verif_method {
 			verif_method.yahoo = yahoo_verif_method.to_yahoo_verif_method(
 				self.proxy.is_some(),
 				hello_name.clone(),
 				from_email.clone(),
-				smtp_timeout.clone(),
+				smtp_timeout,
 				smtp_port,
 				retries,
 			);
@@ -108,42 +169,6 @@ impl CheckEmailRequest {
 			..Default::default()
 		}
 	}
-}
-
-/// The main endpoint handler that implements the logic of this route.
-async fn http_handler(
-	config: Arc<BackendConfig>,
-	body: CheckEmailRequest,
-) -> Result<impl warp::Reply, warp::Rejection> {
-	// The to_email field must be present
-	if body.to_email.is_empty() {
-		Err(
-			ReacherResponseError::new(http::StatusCode::BAD_REQUEST, "to_email field is required.")
-				.into(),
-		)
-	} else {
-		// Run the future to check an email.
-		Ok(warp::reply::json(
-			&check_email(&body.to_check_email_input(Arc::clone(&config))).await,
-		))
-	}
-}
-
-/// Create the `POST /check_email` endpoint.
-pub fn post_check_email<'a>(
-	config: Arc<BackendConfig>,
-) -> impl Filter<Extract = (impl warp::Reply,), Error = warp::Rejection> + Clone + 'a {
-	warp::path!("v0" / "check_email")
-		.and(warp::post())
-		.and(check_header(Arc::clone(&config)))
-		.and(with_config(config))
-		// When accepting a body, we want a JSON body (and to reject huge
-		// payloads)...
-		.and(warp::body::content_length_limit(1024 * 16))
-		.and(warp::body::json())
-		.and_then(http_handler)
-		// View access logs by setting `RUST_LOG=reacher`.
-		.with(warp::log(LOG_TARGET))
 }
 
 /// Warp filter that adds the BackendConfig to the handler.

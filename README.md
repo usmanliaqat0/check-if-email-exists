@@ -31,7 +31,7 @@ This option allows you to run a HTTP backend using Docker 🐳, on a cloud insta
 docker run -p 8080:8080 reacherhq/backend:latest
 ```
 
-Then send a `POST http://localhost:8080/v0/check_email` request with the following body:
+Then send a `POST http://localhost:8080/v1/check_email` request with the following body:
 
 ```js
 {

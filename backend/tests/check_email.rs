@@ -35,7 +35,7 @@ mod tests {
 	#[tokio::test]
 	async fn test_input_foo_bar() {
 		let resp = request()
-			.path("/v0/check_email")
+			.path("/v1/check_email")
 			.method("POST")
 			.header(REACHER_SECRET_HEADER, "foobar")
 			.json(&serde_json::from_str::<CheckEmailRequest>(r#"{"to_email": "foo@bar"}"#).unwrap())
@@ -49,7 +49,7 @@ mod tests {
 	#[tokio::test]
 	async fn test_input_foo_bar_baz() {
 		let resp = request()
-			.path("/v0/check_email")
+			.path("/v1/check_email")
 			.method("POST")
 			.header(REACHER_SECRET_HEADER, "foobar")
 			.json(
@@ -66,7 +66,7 @@ mod tests {
 	#[tokio::test]
 	async fn test_reacher_secret_missing_header() {
 		let resp = request()
-			.path("/v0/check_email")
+			.path("/v1/check_email")
 			.method("POST")
 			.json(
 				&serde_json::from_str::<CheckEmailRequest>(r#"{"to_email": "foo@bar.baz"}"#)
@@ -82,7 +82,7 @@ mod tests {
 	#[tokio::test]
 	async fn test_reacher_secret_wrong_secret() {
 		let resp = request()
-			.path("/v0/check_email")
+			.path("/v1/check_email")
 			.method("POST")
 			.header(REACHER_SECRET_HEADER, "barbaz")
 			.json(
@@ -99,7 +99,7 @@ mod tests {
 	#[tokio::test]
 	async fn test_reacher_secret_correct_secret() {
 		let resp = request()
-			.path("/v0/check_email")
+			.path("/v1/check_email")
 			.method("POST")
 			.header(REACHER_SECRET_HEADER, "foobar")
 			.json(&serde_json::from_str::<CheckEmailRequest>(r#"{"to_email": "foo@bar"}"#).unwrap())
@@ -113,7 +113,7 @@ mod tests {
 	#[tokio::test]
 	async fn test_reacher_to_mail_empty() {
 		let resp = request()
-			.path("/v0/check_email")
+			.path("/v1/check_email")
 			.method("POST")
 			.header(REACHER_SECRET_HEADER, "foobar")
 			.json(&serde_json::from_str::<CheckEmailRequest>(r#"{"to_email": ""}"#).unwrap())
