@@ -37,8 +37,9 @@ services:
             RCH__WORKER__ENABLE: true
             RCH__WORKER__RABBITMQ__URL: amqp://guest:guest@rabbitmq:5672
             RCH__STORAGE__POSTGRES__DB_URL: postgres://postgres:postgres@postgres:5432/reacher_db
-            RCH__WORKER__THROTTLE__MAX_REQUESTS_PER_DAY: 10000 # Recommended limit per IP per day for SMTP requests
             RCH__HEADER_SECRET: 4d806a66310aa232fbf73b44837c1691
+            RCH__HELLO_NAME: sparkosol
+            RCH__FROM_EMAIL: contact@sparkosol.com
         restart: always
 
     worker2:
@@ -55,6 +56,7 @@ services:
             RCH__WORKER__ENABLE: true
             RCH__WORKER__RABBITMQ__URL: amqp://guest:guest@rabbitmq:5672
             RCH__STORAGE__POSTGRES__DB_URL: postgres://postgres:postgres@postgres:5432/reacher_db
-            RCH__WORKER__THROTTLE__MAX_REQUESTS_PER_DAY: 10000 # Recommended limit per IP per day for SMTP requests
             RCH__HEADER_SECRET: 4d806a66310aa232fbf73b44837c1691
+            RCH__HELLO_NAME: usmanliaqat
+            RCH__FROM_EMAIL: contact@gmail.com
         restart: always

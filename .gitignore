@@ -12,4 +12,5 @@ hotmail.jpeg
 # sensitive data
 /test_suite/src/sensitive_fixtures/*.json
 run.sh
-.env
+config.bat
+node_modules
